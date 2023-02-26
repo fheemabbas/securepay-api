@@ -15,8 +15,8 @@ const TOKEN_TYPE = {
     RESET_PASSWORD: 4,
 };
 const DEFAULT_IMAGE = {
-    URL: 'https://res.cloudinary.com/yatapay/image/upload/',
-    DUMMYPROFILE: 'v1639200232/Yatapay/blank-profile_lvfrbt.png'
+    URL: 'https://res.cloudinary.com/dt5pgt4gk/image/upload/',
+    DUMMYPROFILE: 'v1639200232/Trustpay/blank-profile_lvfrbt.png'
 }
 const MILESTONESTATUS = {
     WAITING_ACCEPT: "WAITING_ACCEPT",  // Client = Waiting For Client to Accept Job, Customer = Waiting for You to Accept Job

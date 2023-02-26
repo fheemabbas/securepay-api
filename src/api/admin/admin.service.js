@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const Messages = require('../../utils/messages');
 const commonService = require("../common/common.service");
 const ObjectId = mongoose.Types.ObjectId
-// const {Admin , Customer} = require('../../models')
+// const Admin = require('../../models/admin.model')
 const tokenService = require('../common/token.service');
 const config = require('../../config/config')
 const { TOKEN_TYPE } = require('../../config/constant');
@@ -18,6 +18,7 @@ const _ = require('lodash');
 
 const getAdminByEmail = async (email) => {
   const admins = await Admin.findOne({ email })
+  console.log("admins ::", admins)
   if (!admins) {
     throw new AppError(httpStatus.UNPROCESSABLE_ENTITY, Messages.EMAIL_NOT_FOUND);
   }

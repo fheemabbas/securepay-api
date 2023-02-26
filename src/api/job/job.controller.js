@@ -28,12 +28,12 @@ const createJob = catchAsync(async (req, res) => {
     // ------------------- Mail Send & notification ----------------------
     let jobMilestone;
     if (req.body.isFullPayment) {
-        // await emailService.sendMilestoneSingle(getjobdata[0].customerEmail, getjobdata);
+        await emailService.sendMilestoneSingle(getjobdata[0].customerEmail, getjobdata);
         jobMilestone = {
             Job, getjobdata
         }
     } else {
-        // await emailService.sendMilestoneMultiple(getjobdata[0].customerEmail, getjobdata);
+        await emailService.sendMilestoneMultiple(getjobdata[0].customerEmail, getjobdata);
         jobMilestone = {
             Job, getjobdata
         }
@@ -65,13 +65,13 @@ const jobAccepted = catchAsync(async (req, res) => {
     let client = await customerServices.getUserById(result.userId);
     let customer = await customerServices.getUserById(result.inviteUserId);
 
-    // await emailService.acceptedJob(client.email, {
-    //     clientName: client.firstName + ' ' + client.lastName,
-    //     customerName: customer.firstName + ' ' + customer.lastName,
-    //     jobName: result.name,
-    //     // status: 'accepted',
-    //     // subject: TITLE.TRANSACTION_ACCEPTED,
-    // });
+    await emailService.acceptedJob(client.email, {
+        clientName: client.firstName + ' ' + client.lastName,
+        customerName: customer.firstName + ' ' + customer.lastName,
+        jobName: result.name,
+        // status: 'accepted',
+        // subject: TITLE.TRANSACTION_ACCEPTED,
+    });
     let des = DESC.TRANSACTION_ACCEPTED.replace('$', result.name)
     if (client.number && client.dialCode) {
         let toMobile = "+" + client.dialCode + "" + client.number
@@ -93,14 +93,14 @@ const jobRejected = catchAsync(async (req, res) => {
     let client = await customerServices.getUserById(result.userId);
     let customer = await customerServices.getUserById(result.inviteUserId);
 
-    // await emailService.rejectedJob(client.email, {
-    //     clientName: client.firstName + ' ' + client.lastName,
-    //     customerName: customer.firstName + ' ' + customer.lastName,
-    //     jobName: result.name,
-    //     // status: 'rejected',
-    //     // rejectComment: req.body.reason,
-    //     // subject: TITLE.TRANSACTION_REJECTED,
-    // });
+    await emailService.rejectedJob(client.email, {
+        clientName: client.firstName + ' ' + client.lastName,
+        customerName: customer.firstName + ' ' + customer.lastName,
+        jobName: result.name,
+        // status: 'rejected',
+        // rejectComment: req.body.reason,
+        // subject: TITLE.TRANSACTION_REJECTED,
+    });
     let des = DESC.TRANSACTION_REJECTED.replace('$', result.name)
     if (client.number && client.dialCode) {
         let toMobile = "+" + client.dialCode + "" + client.number
@@ -128,12 +128,12 @@ const jobModificationRequest = catchAsync(async (req, res) => {
     let client = await customerServices.getUserById(result.userId);
     let customer = await customerServices.getUserById(result.inviteUserId);
 
-    // await emailService.modificationRequest(client.email, {
-    //     clientName: client.firstName + ' ' + client.lastName,
-    //     customerName: customer.firstName + ' ' + customer.lastName,
-    //     jobName: result.name,
-    //     modificationComment: req.body.note
-    // });
+    await emailService.modificationRequest(client.email, {
+        clientName: client.firstName + ' ' + client.lastName,
+        customerName: customer.firstName + ' ' + customer.lastName,
+        jobName: result.name,
+        modificationComment: req.body.note
+    });
 
     if (client.number && client.dialCode) {
         let toMobile = "+" + client.dialCode + "" + client.number

@@ -18,37 +18,35 @@ const twiloService = require('../common/twilo.service')
 const login = catchAsync(async (req, res) => {
     let { email, password, role } = req.body;
     const user = await authService.loginUser(email, password, role);
-    console.log("user :::", user)
     const tokens = await authService.generateAuthTokens(user._id, user.role);
-    console.log("tokens :::", tokens)
-    // if (role === ROLES.CLIENT && user.registerComplete) {
-    //     let otp = await commonService.generateOtp();
-    //     await emailService.verifyOTP(email, {
-    //         ...user.toJSON(),
-    //         otp: otp
-    //     });
-    //     await customerService.updateUser(user._id, { verifyOtp: otp })
+    if (role === ROLES.CLIENT && user.registerComplete) {
+        let otp = await commonService.generateOtp();
+        await emailService.verifyOTP(email, {
+            ...user.toJSON(),
+            otp: otp
+        });
+        await customerService.updateUser(user._id, { verifyOtp: otp })
 
-    //     if (user.number && user.dialCode) {
-    //         let toMobile = "+" + user.dialCode + "" + user.number
-    //         let body = "Your One Time Password (OTP) for Yatapay is" + otp + " .Please do not share this OTP with anyone. Thanks"
-    //         await twiloService.sendSms(toMobile, body)
-    //     }
-    // } else if (role === ROLES.ADMIN || role === ROLES.STAFF_MEMBERS) {
+        // if (user.number && user.dialCode) {
+        //     let toMobile = "+" + user.dialCode + "" + user.number
+        //     let body = "Your One Time Password (OTP) for Yatapay is" + otp + " .Please do not share this OTP with anyone. Thanks"
+        //     await twiloService.sendSms(toMobile, body)
+        // }
+    } else if (role === ROLES.ADMIN || role === ROLES.STAFF_MEMBERS) {
 
-    //     let otp = await commonService.generateOtp();
-    //     await emailService.verifyOTP(email, {
-    //         ...user.toJSON(),
-    //         otp: otp
-    //     });
-    //     await adminService.updateUser(user._id, { verifyOtp: otp })
+        let otp = await commonService.generateOtp();
+        await emailService.verifyOTP(email, {
+            ...user.toJSON(),
+            otp: otp
+        });
+        await adminService.updateUser(user._id, { verifyOtp: otp })
 
-    //     if (user.number && user.dialCode) {
-    //         let toMobile = "+" + user.dialCode + "" + user.number
-    //         let body = "Your One Time Password (OTP) for Yatapay is" + otp + " .Please do not share this OTP with anyone. Thanks"
-    //         await twiloService.sendSms(toMobile, body)
-    //     }
-    // }
+        // if (user.number && user.dialCode) {
+        //     let toMobile = "+" + user.dialCode + "" + user.number
+        //     let body = "Your One Time Password (OTP) for Yatapay is" + otp + " .Please do not share this OTP with anyone. Thanks"
+        //     await twiloService.sendSms(toMobile, body)
+        // }
+    }
     const response = { user, tokens };
     createResponse(res, httpStatus.OK, role === ROLES.CLIENT ? user.registerComplete ? Messages.LOGIN_WITH_OTP : Messages.LOGIN : Messages.LOGIN_WITH_OTP, response)
 });
@@ -62,11 +60,11 @@ const resetPassword = catchAsync(async (req, res) => {
     await emailService.sendResetedPassword(user.email, {
         ...user.toJSON(),
     });
-    if (user.number && user.dialCode) {
-        let toMobile = "+" + user.dialCode + "" + user.number
-        let body = "Your password has been updated successfully. You can now log in to Yatapay Secure dashboard with your new password"
-        await twiloService.sendSms(toMobile, body)
-    }
+    // if (user.number && user.dialCode) {
+    //     let toMobile = "+" + user.dialCode + "" + user.number
+    //     let body = "Your password has been updated successfully. You can now log in to Yatapay Secure dashboard with your new password"
+    //     await twiloService.sendSms(toMobile, body)
+    // }
     createResponse(res, httpStatus.OK, Messages.RESET_PASSWORD, {});
 })
 const forgotPassword = catchAsync(async (req, res) => {
@@ -134,25 +132,25 @@ const register = catchAsync(async (req, res) => {
             };
             let mangoData;
             let walletData;
-            if (userData.customerId) {
-                mangoData = await mangopayService.updateNaturalUser(param, userData.customerId);
-                let walletParam = {
-                    "Description": `Legal user wallet for creating Pay in`,
-                }
-                walletData = await mangopayService.updateWallets(walletParam, userData.walletId);
-            } else {
-                mangoData = await mangopayService.createNaturalUser(param);
-                let walletParam = {
-                    "Owners": [mangoData.Id],
-                    "Description": `Legal user wallet for creating Pay in`,
-                    "Currency": "GBP"
-                }
-                walletData = await mangopayService.createWallets(walletParam);
-            }
+            // if (userData.customerId) {
+            //     mangoData = await mangopayService.updateNaturalUser(param, userData.customerId);
+            //     let walletParam = {
+            //         "Description": `Legal user wallet for creating Pay in`,
+            //     }
+            //     walletData = await mangopayService.updateWallets(walletParam, userData.walletId);
+            // } else {
+            //     mangoData = await mangopayService.createNaturalUser(param);
+            //     let walletParam = {
+            //         "Owners": [mangoData.Id],
+            //         "Description": `Legal user wallet for creating Pay in`,
+            //         "Currency": "GBP"
+            //     }
+            //     walletData = await mangopayService.createWallets(walletParam);
+            // }
             // ************************************* End Create and update natural user & create wallets *************************************
 
 
-            await customerService.updateUser(req.query.userId, { customerId: mangoData.Id, walletId: walletData.Id });
+            await customerService.updateUser(req.query.userId);
         }
         createResponse(res, httpStatus.CREATED, Messages.ACCOUNT_CREATED, userData);
     }
@@ -191,25 +189,25 @@ const register = catchAsync(async (req, res) => {
             }
             let mangoData;
             let walletData;
-            if (userData.customerId) {
-                mangoData = await mangopayService.updateLegalUser(param, userData.customerId);
-                let walletParam = {
-                    "Description": `Legal user wallet for creating Pay in`,
-                }
-                walletData = await mangopayService.updateWallets(walletParam, userData.walletId);
-            } else {
-                mangoData = await mangopayService.createLegalUser(param);
-                let walletParam = {
-                    "Owners": [mangoData.Id],
-                    "Description": `Legal user wallet for creating Pay in`,
-                    "Currency": "GBP"
-                }
-                walletData = await mangopayService.createWallets(walletParam);
+            // if (userData.customerId) {
+            //     mangoData = await mangopayService.updateLegalUser(param, userData.customerId);
+            //     let walletParam = {
+            //         "Description": `Legal user wallet for creating Pay in`,
+            //     }
+            //     walletData = await mangopayService.updateWallets(walletParam, userData.walletId);
+            // } else {
+            //     mangoData = await mangopayService.createLegalUser(param);
+            //     let walletParam = {
+            //         "Owners": [mangoData.Id],
+            //         "Description": `Legal user wallet for creating Pay in`,
+            //         "Currency": "GBP"
+            //     }
+            //     walletData = await mangopayService.createWallets(walletParam);
 
-            }
+            // }
             // ************************************* End create and update natural user & create wallets *************************************
 
-            await customerService.updateUser(req.query.userId, { customerId: mangoData.Id, walletId: walletData.Id });
+            await customerService.updateUser(req.query.userId);
         }
         createResponse(res, httpStatus.CREATED, Messages.ACCOUNT_CREATED, userData);
     }
@@ -231,17 +229,17 @@ const register = catchAsync(async (req, res) => {
                 "Country": userData.country
             },
         }
-        if (userData.bankId) {
-            let body = {
-                Active: false
-            };
-            await mangopayService.deactivateBankAccount(body, userData.customerId, userData.bankId);
-        }
-        let bankDetail = await mangopayService.createBankAccount(bankParam, userData.customerId)
+        // if (userData.bankId) {
+        //     let body = {
+        //         Active: false
+        //     };
+        //     await mangopayService.deactivateBankAccount(body, userData.customerId, userData.bankId);
+        // }
+        // let bankDetail = await mangopayService.createBankAccount(bankParam, userData.customerId)
 
         // ************************************* End Create and update bank account *************************************
 
-        const userd = await customerService.updateUser(req.query.userId, { bankId: bankDetail.Id });
+        const userd = await customerService.updateUser(req.query.userId);
         createResponse(res, httpStatus.CREATED, Messages.ACCOUNT_CREATED, userd);
     }
     else if (req.body.registerStep == 11) {
@@ -259,14 +257,14 @@ const register = catchAsync(async (req, res) => {
         // if (user.kycDocsId) {
         //     declaration = user.kycDocsId;
         // } else {
-        kycData = await mangopayService.createkycDoc(user.customerId);
-        declaration = kycData.Id;
-        // }
-        const contents = fs.readFileSync(req.file.path, { encoding: 'base64' });
-        kycPage = await mangopayService.createkycPage(user.customerId, declaration, contents)
+        // kycData = await mangopayService.createkycDoc(user.customerId);
+        // declaration = kycData.Id;
+        // // }
+        // const contents = fs.readFileSync(req.file.path, { encoding: 'base64' });
+        // kycPage = await mangopayService.createkycPage(user.customerId, declaration, contents)
         // ************************************* Start Create and update KYC Docs *************************************
 
-        const userd = await customerService.updateUser(req.query.userId, { kycDocsId: declaration });
+        const userd = await customerService.updateUser(req.query.userId);
         createResponse(res, httpStatus.CREATED, Messages.ACCOUNT_CREATED, userd);
     }
     else if (req.body.registerStep == 12) {
@@ -274,13 +272,13 @@ const register = catchAsync(async (req, res) => {
 
         // ************************************* Start Create and update UBO Info *************************************
         let declaration;
-        if (userData.uboDeclarationId) {
-            declaration = userData.uboDeclarationId;
-        } else {
-            let uboDec = await mangopayService.createDeclaration(userData.customerId);
-            declaration = uboDec.Id;
-            await customerService.updateUser(req.query.userId, { uboDeclarationId: uboDec.Id });
-        }
+        // if (userData.uboDeclarationId) {
+        //     declaration = userData.uboDeclarationId;
+        // } else {
+        //     let uboDec = await mangopayService.createDeclaration(userData.customerId);
+        //     declaration = uboDec.Id;
+        //     await customerService.updateUser(req.query.userId, { uboDeclarationId: uboDec.Id });
+        // }
 
         userData.uboInfo.map(async (value, index) => {
             let uboParam = {
@@ -302,11 +300,11 @@ const register = catchAsync(async (req, res) => {
                 }
             }
             let uboData;
-            if (value.uboId) {
-                uboData = await mangopayService.updateUBO(uboParam, userData.customerId, declaration, value.uboId)
-            } else {
-                uboData = await mangopayService.createUBO(uboParam, userData.customerId, declaration)
-            }
+            // if (value.uboId) {
+            //     uboData = await mangopayService.updateUBO(uboParam, userData.customerId, declaration, value.uboId)
+            // } else {
+            //     uboData = await mangopayService.createUBO(uboParam, userData.customerId, declaration)
+            // }
             userData.uboInfo[index].uboId = uboData.Id;
             if (index === userData.uboInfo.length - 1) {
                 let userValue = await customerService.updateUser(req.query.userId, { uboInfo: userData.uboInfo });
@@ -326,17 +324,17 @@ const register = catchAsync(async (req, res) => {
         );
         if (user.facebookId == null && user.gmailId == null) {
             req.body.isVerified = false
-            // await emailService.sendUserVerify(user.email, {
-            //     ...user.toJSON(),
-            //     token: verifyToken,
-            // });
+            await emailService.sendUserVerify(user.email, {
+                ...user.toJSON(),
+                token: verifyToken,
+            });
             await customerService.updateUser(req.query.userId, req.body);
         }
         if (user.accountType === ACCOUNT_TYPE.ORGANIZATION) {
             console.log(user.uboInfo.length)
             if (user.uboInfo.length === 0) {
-                let uboDec = await mangopayService.createDeclaration(user.customerId);
-                let declaration = uboDec.Id;
+                // let uboDec = await mangopayService.createDeclaration(user.customerId);
+                // let declaration = uboDec.Id;
 
                 let uboParam = {
                     "FirstName": user.firstName,
@@ -356,7 +354,7 @@ const register = catchAsync(async (req, res) => {
                         "Country": user.country
                     }
                 }
-                let uboData = await mangopayService.createUBO(uboParam, user.customerId, declaration)
+                // let uboData = await mangopayService.createUBO(uboParam, user.customerId, declaration)
                 let uboBody = [{
                     "address": {
                         "houseNo": user.address.houseNo,
@@ -369,7 +367,7 @@ const register = catchAsync(async (req, res) => {
                     "lastName": user.lastName,
                     "nationality": user.country,
                     "dob": new Date(user.dob),
-                    "uboId": uboData.Id
+                    // "uboId": uboData.Id
                 }]
                 let userValue = await customerService.updateUser(req.query.userId, { uboDeclarationId: declaration, uboInfo: uboBody });
             }
@@ -437,11 +435,11 @@ const changePassword = catchAsync(async (req, res) => {
         ...user.toJSON(),
     });
 
-    if (user.number && user.dialCode) {
-        let toMobile = "+" + user.dialCode + "" + user.number
-        let body = "Your password has been changed successfully. You can now log in to Yatapay Secure dashboard with your new password"
-        await twiloService.sendSms(toMobile, body)
-    }
+    // if (user.number && user.dialCode) {
+    //     let toMobile = "+" + user.dialCode + "" + user.number
+    //     let body = "Your password has been changed successfully. You can now log in to Yatapay Secure dashboard with your new password"
+    //     await twiloService.sendSms(toMobile, body)
+    // }
 
     createResponse(res, httpStatus.OK, Messages.PASSWORD_CHANGED, {})
 });

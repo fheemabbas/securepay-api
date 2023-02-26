@@ -388,41 +388,41 @@ const updateBankInfo = async (req) => {
       "Country": userData.country
     }
   }
-  if (userData.bankId) {
-    let body = {
-      Active: false
-    };
-    await mangopayService.deactivateBankAccount(body, userData.customerId, userData.bankId);
-  }
-  let bankDetail = await mangopayService.createBankAccount(bankParam, userData.customerId)
+  // if (userData.bankId) {
+  //   let body = {
+  //     Active: false
+  //   };
+  //   await mangopayService.deactivateBankAccount(body, userData.customerId, userData.bankId);
+  // }
+  // let bankDetail = await mangopayService.createBankAccount(bankParam, userData.customerId)
 
-  let declaration;
-  let kycData;
+  // let declaration;
+  // let kycData;
 
   // if (userData.kycDocsId) {
   //   declaration = userData.kycDocsId;
   // } else {
-  kycData = await mangopayService.createkycDoc(userData.customerId);
-  declaration = kycData.Id;
+  // kycData = await mangopayService.createkycDoc(userData.customerId);
+  // declaration = kycData.Id;
   // }
-  if (req.file) {
+  // if (req.file) {
 
-    let url = await cloudinaryService.uploadOnCloudinary(req.file.path, req.file.originalname);
-    let imageURL = url.secure_url.split('/upload')
-    req.body.identityProof = imageURL[1];
+  //   let url = await cloudinaryService.uploadOnCloudinary(req.file.path, req.file.originalname);
+  //   let imageURL = url.secure_url.split('/upload')
+  //   req.body.identityProof = imageURL[1];
 
 
-    // console.log(declaration)
-    const contents = fs.readFileSync(req.file.path, { encoding: 'base64' });
-    // console.log(contents);
-    await mangopayService.createkycPage(userData.customerId, declaration, contents)
+  //   // console.log(declaration)
+  //   const contents = fs.readFileSync(req.file.path, { encoding: 'base64' });
+  //   // console.log(contents);
+  //   await mangopayService.createkycPage(userData.customerId, declaration, contents)
 
-  }
+  // }
 
   let body = {
     bankId: bankDetail.Id,
     bankInfo: { 'accountNumber': req.body.accountNumber, 'sortCode': req.body.sortCode },
-    kycDocsId: declaration,
+    // kycDocsId: declaration,
     identityProof: req.body.identityProof
   }
   const users = await updateUser(req.user.id, body);
@@ -455,7 +455,7 @@ const updatePersonalInfo = async (req) => {
       "CompanyNumber": userData.company.number,
       "Email": userData.email,
     }
-    mangoData = await mangopayService.updateLegalUser(param, userData.customerId);
+    // mangoData = await mangopayService.updateLegalUser(param, userData.customerId);
     console.log(param);
   } else {
     let param = {
@@ -466,7 +466,7 @@ const updatePersonalInfo = async (req) => {
       CountryOfResidence: req.body.country,
       Email: userData.email,
     };
-    mangoData = await mangopayService.updateNaturalUser(param, userData.customerId);
+    // mangoData = await mangopayService.updateNaturalUser(param, userData.customerId);
   }
   let body = {
     firstName: req.body.firstName,
@@ -511,7 +511,7 @@ const updateCompanyInfo = async (req) => {
     "CompanyNumber": req.body.number,
     "Email": userData.email,
   }
-  let mangoData = await mangopayService.updateLegalUser(param, userData.customerId);
+  // let mangoData = await mangopayService.updateLegalUser(param, userData.customerId);
 
 
   let body = {
@@ -556,7 +556,7 @@ const updateUBO = async (body, user) => {
     }
   }
 
-  let uboData = await mangopayService.updateUBO(uboParam, userData.customerId, declaration, body.uboId)
+  // let uboData = await mangopayService.updateUBO(uboParam, userData.customerId, declaration, body.uboId)
 
   let param = {
     firstName: body.firstName,
@@ -587,7 +587,7 @@ const addUBO = async (body, user) => {
   if (userData.uboDeclarationId) {
     declaration = userData.uboDeclarationId;
   } else {
-    let uboDec = await mangopayService.createDeclaration(userData.customerId);
+    // let uboDec = await mangopayService.createDeclaration(userData.customerId);
     declaration = uboDec.Id;
     await updateUser(user.id, { uboDeclarationId: uboDec.Id });
   }
@@ -610,7 +610,7 @@ const addUBO = async (body, user) => {
       "Country": body.nationality
     }
   }
-  let uboData = await mangopayService.createUBO(uboParam, userData.customerId, declaration)
+  // let uboData = await mangopayService.createUBO(uboParam, userData.customerId, declaration)
 
   let param = {
     firstName: body.firstName,
@@ -636,9 +636,9 @@ const getKycStatus = async (user) => {
 
   let client = await getUserById(user.id);
 
-  let kycStatus = await mangopayService.getKYCStatus(client.kycDocsId);
+  // let kycStatus = await mangopayService.getKYCStatus(client.kycDocsId);
 
-  return kycStatus
+  return
 
 }
 

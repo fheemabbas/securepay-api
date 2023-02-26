@@ -114,7 +114,7 @@ const escrowPaymentsWithCard = async (req) => {
     "StatementDescriptor": `Yatapay`
   }
   console.log(param)
-  let paymentData = await mangopayService.payinByCard(param);
+  // let paymentData = await mangopayService.payinByCard(param);
   // console.log(paymentData)
 
 
@@ -144,11 +144,11 @@ const escrowPaymentsWithCard = async (req) => {
 
     let des = DESC.PAYMENT_STAGE_UPDATED.replace('$', jobs.name).replace('#', 'Payment In Deposit Box');
 
-    if (client.number && client.dialCode) {
-      let toMobile = "+" + client.dialCode + "" + client.number
-      let body = des
-      await twiloService.sendSms(toMobile, body)
-    }
+    // if (client.number && client.dialCode) {
+    //   let toMobile = "+" + client.dialCode + "" + client.number
+    //   let body = des
+    //   await twiloService.sendSms(toMobile, body)
+    // }
 
     pubnubService.sendNotification(client._id, { title: TITLE.PAYMENT_STAGE_UPDATED, description: des })
 
@@ -240,7 +240,7 @@ const paymentReleases = async (req) => {
 
   let data = { milestoneName: milestones.title, jobName: jobs.name, clientEmail: client.email, customerName: customers.firstName + ' ' + customers.lastName, clientName: client.firstName + ' ' + client.lastName };
 
-  // await emailService.paymentRelease(data.clientEmail, data);
+  await emailService.paymentRelease(data.clientEmail, data);
 
   // if (client.number && client.dialCode) {
   //   let toMobile = "+" + client.dialCode + "" + client.number
@@ -321,7 +321,7 @@ const paymentReleaseRequests = async (req) => {
 
   let response = { milestoneName: data.title, jobName: jobDetails.name, customerEmail: customer.email, customerName: customer.firstName + ' ' + customer.lastName, clientName: client.firstName + ' ' + client.lastName };
 
-  // await emailService.paymentReleaseRequest(response.customerEmail, response);
+  await emailService.paymentReleaseRequest(response.customerEmail, response);
 
   let des = DESC.PAYMENT_STAGE_UPDATED.replace('$', response.jobName).replace('#', 'Payment Release Requested');
 
@@ -356,7 +356,7 @@ const paymentReleaseRequests = async (req) => {
 
   //     let response = { milestoneName: data.title, jobName: jobDetails.name, customerEmail: customer.email, customerName: customer.firstName + ' ' + customer.lastName, clientName: client.firstName + ' ' + client.lastName };
 
-  //     await emailService.paymentReleaseRequest(response.customerEmail, response);
+  // await emailService.paymentReleaseRequest(response.customerEmail, response);
 
   //     let des = DESC.PAYMENT_STAGE_UPDATED.replace('$', response.jobName).replace('#', 'Payment Release Requested');
 

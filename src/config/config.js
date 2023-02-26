@@ -63,8 +63,8 @@ module.exports = {
   //   },
   //   from: envVars.EMAIL_FROM,
   // },
-  // admin: {
-  //   email: envVars.ADMIN_EMAIL,
-  //   id: envVars.ADMIN_ID
-  // }
+  admin: {
+    email: envVars.ADMIN_EMAIL,
+    id: envVars.ADMIN_ID
+  }
 };

@@ -44,11 +44,11 @@ const raisedDispute = catchAsync(async (req, res) => {
 	await emailService.disputeRaised(config.admin.email, { 'name': adminData.firstName + ' ' + adminData.lastName, 'milestoneTitle': job.name, 'amount': mileStone.amount, 'createdBy': createdUser.firstName + ' ' + createdUser.lastName, 'reason': req.body.description })
 
 	let des = DESC.DISPUTE_RAISED.replace('$', job.name).replace('#', createdUser.firstName + ' ' + createdUser.lastName);
-	if (customer.number && customer.dialCode) {
-		let toMobile = "+" + customer.dialCode + "" + customer.number
-		let body = des
-		await twiloService.sendSms(toMobile, body)
-	}
+	// if (customer.number && customer.dialCode) {
+	// 	let toMobile = "+" + customer.dialCode + "" + customer.number
+	// 	let body = des
+	// 	await twiloService.sendSms(toMobile, body)
+	// }
 	pubnubService.sendNotification(customer._id, { title: TITLE.DISPUTE_RAISED, description: des });
 	pubnubService.sendNotification(staff._id, { title: TITLE.DISPUTE_RAISED, description: des });
 	pubnubService.sendNotification(config.admin.id, { title: TITLE.DISPUTE_RAISED, description: des });
@@ -83,17 +83,17 @@ const disputeAnnounce = catchAsync(async (req, res) => {
 
 	let des = DESC.DISPUTE_DECISION_ANNOUNCED.replace('$', milestoneData.title);
 
-	if (customer.number && customer.dialCode) {
-		let toMobile = "+" + customer.dialCode + "" + customer.number
-		let body = des
-		await twiloService.sendSms(toMobile, body)
-	}
+	// if (customer.number && customer.dialCode) {
+	// 	let toMobile = "+" + customer.dialCode + "" + customer.number
+	// 	let body = des
+	// 	await twiloService.sendSms(toMobile, body)
+	// }
 
-	if (client.number && client.dialCode) {
-		let toMobile = "+" + client.dialCode + "" + client.number
-		let body = des
-		await twiloService.sendSms(toMobile, body)
-	}
+	// if (client.number && client.dialCode) {
+	// 	let toMobile = "+" + client.dialCode + "" + client.number
+	// 	let body = des
+	// 	await twiloService.sendSms(toMobile, body)
+	// }
 
 	pubnubService.sendNotification(customer._id, { title: TITLE.DISPUTE_DECISION_ANNOUNCED, description: des });
 	pubnubService.sendNotification(client._id, { title: TITLE.DISPUTE_DECISION_ANNOUNCED, description: des });
@@ -146,7 +146,7 @@ const disputeAccept = catchAsync(async (req, res) => {
 		await emailService.disputeReject(staff.email, { CUSTOMER_NAME: `${req.user.firstName} ${req.user.lastName}`, STAFF_NAME: staff.firstName + ' ' + staff.lastName, 'MILESTONE_TITLE': milestoneData.title, 'JOB_TITLE': jobs.name });
 		await emailService.disputeReject(config.admin.email, { CUSTOMER_NAME: `${req.user.firstName} ${req.user.lastName}`, STAFF_NAME: adminData.firstName + ' ' + adminData.lastName, 'MILESTONE_TITLE': milestoneData.title, 'JOB_TITLE': jobs.name });
 		await emailService.disputeReject(customer.email, { CUSTOMER_NAME: `${req.user.firstName} ${req.user.lastName}`, STAFF_NAME: customer.firstName + ' ' + customer.lastName, 'MILESTONE_TITLE': milestoneData.title, 'JOB_TITLE': jobs.name });
-		// await emailService.disputeAccept(config.admin.email, { STAFF_NAME: adminData.firstName + ' ' + adminData.lastName, 'MILESTONE_TITLE': milestoneData.title, 'JOB_TITLE': jobs.name });
+		await emailService.disputeAccept(config.admin.email, { STAFF_NAME: adminData.firstName + ' ' + adminData.lastName, 'MILESTONE_TITLE': milestoneData.title, 'JOB_TITLE': jobs.name });
 		let des = DESC.DISPUTE_DECISION_REJECTED.replace('$', milestoneData.title).replace('#', req.user.firstName + ' ' + req.user.lastName);
 		pubnubService.sendNotification(staff._id, { title: TITLE.DISPUTE_DECISION_REJECTED, description: des });
 		pubnubService.sendNotification(config.admin.id, { title: TITLE.DISPUTE_DECISION_REJECTED, description: des });

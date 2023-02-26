@@ -6,7 +6,7 @@ const config = require('../../config/config')
 const logger = require('../../config/logger');
 const sgTransport = require("nodemailer-sendgrid-transport");
 let BASE_PATH = __dirname.split('/');
-BASE_PATH.splice(-1, 1);
+// BASE_PATH.splice(-1, 1);
 BASE_PATH = BASE_PATH.join('/');
 
 const emailConfig = () => {
@@ -24,7 +24,7 @@ const mailBody = (to, htmlToSend, subject) => {
   var mailOptions = {
     from: process.env.EMAIL_FROM,
     to: to,
-    fromname: "Yatapay",
+    fromname: "Securepay",
     replyTo: process.env.EMAIL_FROM,
     subject: subject,
     html: htmlToSend
@@ -38,14 +38,14 @@ const sendEmail = async (mailOptions) => {
     info = await transporter.sendMail(mailOptions);
     info && console.log("send mail successfully..!!");
   } catch (error) {
-    console.log({status: false, data: {}, msg: "mail send error : " + error});
+    console.log({ status: false, data: {}, msg: "mail send error : " + error });
   }
   return info;
 };
 
 const sendForgotPasswordEmail = async (to, body) => {
-  const subject = 'Forgot Your Yatapay Secure Password?';
-  const html = fs.readFileSync(path.join(BASE_PATH, "/public/template/ForgotPassword.html"), {encoding: "utf-8"});  // const url = `http://${process.env.HOST}/v1/reset-password?token=${body.token}`;
+  const subject = 'Forgot Your Securepay  Password?';
+  const html = fs.readFileSync(path.join(BASE_PATH, "/public/template/ForgotPassword.html"), { encoding: "utf-8" });  // const url = `http://${process.env.HOST}/v1/reset-password?token=${body.token}`;
 
   var url = `${process.env.HOST}/resetpassword?token=${body.token}`;
   const template = handlebars.compile(html);
@@ -60,8 +60,8 @@ const sendForgotPasswordEmail = async (to, body) => {
 };
 
 const sendUserVerify = async (to, body) => {
-  var subject = 'Welcome to YataPay';
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/VerifiedEmail.html"), {encoding: "utf-8"});
+  var subject = 'Welcome to Securepay';
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/VerifiedEmail.html"), { encoding: "utf-8" });
 
   let url = `${process.env.HOST}/verify?token=${body.token}`;
 
@@ -75,8 +75,8 @@ const sendUserVerify = async (to, body) => {
 };
 
 const sendResetedPassword = async (to, body) => {
-  var subject = 'Your Password On Yatapay Secure Has Changed';
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/ResetedPassword.html"), {encoding: "utf-8"});
+  var subject = 'Your Password On Securepay  Has Changed';
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/ResetedPassword.html"), { encoding: "utf-8" });
 
   // let url = `${process.env.HOST}/verify?token=${body.token}`;
 
@@ -89,9 +89,9 @@ const sendResetedPassword = async (to, body) => {
 };
 
 const sendMilestoneMultiple = async (to, body) => {
-  var subject = 'New Transaction Proposal on Yatapay Secure';
+  var subject = 'New Transaction Proposal on Securepay ';
   let url = `${process.env.HOST}/login`;
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/JobCreationForMultipleMilestoneTransactions.html"), {encoding: "utf-8"});
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/JobCreationForMultipleMilestoneTransactions.html"), { encoding: "utf-8" });
   const template = handlebars.compile(html);
   const htmlToSend = template({
     ...body[0],
@@ -103,9 +103,9 @@ const sendMilestoneMultiple = async (to, body) => {
 }
 
 const sendMilestoneSingle = async (to, body) => {
-  var subject = 'New Transaction Proposal on Yatapay Secure';
+  var subject = 'New Transaction Proposal on Securepay ';
   let url = `${process.env.HOST}/login`;
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/JobCreationForSingleMilestoneTransactions.html"), {encoding: "utf-8"});
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/JobCreationForSingleMilestoneTransactions.html"), { encoding: "utf-8" });
   const template = handlebars.compile(html);
   const htmlToSend = template({
     ...body[0],
@@ -117,8 +117,8 @@ const sendMilestoneSingle = async (to, body) => {
 }
 
 const inviteUserVerify = async (to, body) => {
-  var subject = "You've Been Invited To Join YataPay Secure";
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/InviteUser.html"), {encoding: "utf-8"});
+  var subject = "You've Been Invited To Join Securepay ";
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/InviteUser.html"), { encoding: "utf-8" });
   let url = `${process.env.HOST}/first-time-verify?token=${body.token}`;
 
   const template = handlebars.compile(html);
@@ -132,8 +132,8 @@ const inviteUserVerify = async (to, body) => {
 };
 
 const rejectedJob = async (to, body) => {
-  var subject = 'Transaction Rejected On Yatapay Secure';
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/JobProposalRejectedByClient.html"), {encoding: "utf-8"});
+  var subject = 'Transaction Rejected On Securepay ';
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/JobProposalRejectedByClient.html"), { encoding: "utf-8" });
   // let url = `${process.env.HOST}/first-time-verify?token=${body.token}`;
 
   const template = handlebars.compile(html);
@@ -149,8 +149,8 @@ const rejectedJob = async (to, body) => {
   await sendEmail(mailOptions);
 };
 const acceptedJob = async (to, body) => {
-  var subject = 'Transaction Accepted On Yatapay Secure';
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/JobProposalAcceptedByClient.html"), {encoding: "utf-8"});
+  var subject = 'Transaction Accepted On Securepay ';
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/JobProposalAcceptedByClient.html"), { encoding: "utf-8" });
   // let url = `${process.env.HOST}/first-time-verify?token=${body.token}`;
 
   const template = handlebars.compile(html);
@@ -166,8 +166,8 @@ const acceptedJob = async (to, body) => {
   await sendEmail(mailOptions);
 };
 const escrowPayment = async (to, body) => {
-  var subject = 'YataPay Payment Escrowed';
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/PaymentInEscrow.html"), {encoding: "utf-8"});
+  var subject = 'Trustpay Payment Escrowed';
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/PaymentInEscrow.html"), { encoding: "utf-8" });
   // let url = `${process.env.HOST}/first-time-verify?token=${body.token}`;
 
   const template = handlebars.compile(html);
@@ -177,8 +177,8 @@ const escrowPayment = async (to, body) => {
 };
 
 const sendOtpVarification = async (to, varificationOtp, body) => {
-  var subject = 'Welcome to Yatapay Secure';
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/Otpvarification.html"), {encoding: "utf-8"});
+  var subject = 'Welcome to Securepay ';
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/Otpvarification.html"), { encoding: "utf-8" });
 
   let url = `${process.env.HOST}/set-password?token=${body.token}`;
   const template = handlebars.compile(html);
@@ -192,8 +192,8 @@ const sendOtpVarification = async (to, varificationOtp, body) => {
 }
 
 const modificationRequest = async (to, body) => {
-  var subject = "Job Modification Request Received | Yatapay Secure";
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/ModificationRequest.html"), {encoding: "utf-8"});
+  var subject = "Job Modification Request Received | Securepay ";
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/ModificationRequest.html"), { encoding: "utf-8" });
   // let url = `${process.env.HOST}/first-time-verify?token=${body.token}`;
 
   const template = handlebars.compile(html);
@@ -208,8 +208,8 @@ const modificationRequest = async (to, body) => {
 };
 
 const paymentReleaseRequest = async (to, body) => {
-  var subject = "YataPay Payment Release Request";
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/ReleaseRequest.html"), {encoding: "utf-8"});
+  var subject = "Trustpay Payment Release Request";
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/ReleaseRequest.html"), { encoding: "utf-8" });
   // let url = `${process.env.HOST}/first-time-verify?token=${body.token}`;
 
   const template = handlebars.compile(html);
@@ -218,8 +218,8 @@ const paymentReleaseRequest = async (to, body) => {
   await sendEmail(mailOptions);
 };
 const paymentRelease = async (to, body) => {
-  var subject = "YataPay Payment Released";
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/PaymentRelease.html"), {encoding: "utf-8"});
+  var subject = "Trustpay Payment Released";
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/PaymentRelease.html"), { encoding: "utf-8" });
   // let url = `${process.env.HOST}/first-time-verify?token=${body.token}`;
 
   const template = handlebars.compile(html);
@@ -228,8 +228,8 @@ const paymentRelease = async (to, body) => {
   await sendEmail(mailOptions);
 };
 const disputeRaised = async (to, body) => {
-  var subject = "A New Job Query Has Been Raised | Yatapay Secure";
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/DisputeRaised.html"), {encoding: "utf-8"});
+  var subject = "A New Job Query Has Been Raised | Securepay ";
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/DisputeRaised.html"), { encoding: "utf-8" });
   // let url = `${process.env.HOST}/first-time-verify?token=${body.token}`;
 
   const template = handlebars.compile(html);
@@ -240,8 +240,8 @@ const disputeRaised = async (to, body) => {
 
 
 const disputeAnnounced = async (to, body) => {
-  var subject = "Query Resolution Proposed | Yatapay Secure";
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/DisputeAnnounced.html"), {encoding: "utf-8"});
+  var subject = "Query Resolution Proposed | Securepay ";
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/DisputeAnnounced.html"), { encoding: "utf-8" });
   // let url = `${process.env.HOST}/first-time-verify?token=${body.token}`;
 
   const template = handlebars.compile(html);
@@ -250,8 +250,8 @@ const disputeAnnounced = async (to, body) => {
   await sendEmail(mailOptions);
 };
 const disputeAccept = async (to, body) => {
-  var subject = "Query Resolution Accepted | Yatapay Secure";
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/DisputeAccepted.html"), {encoding: "utf-8"});
+  var subject = "Query Resolution Accepted | Securepay ";
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/DisputeAccepted.html"), { encoding: "utf-8" });
   // let url = `${process.env.HOST}/first-time-verify?token=${body.token}`;
 
   const template = handlebars.compile(html);
@@ -260,8 +260,8 @@ const disputeAccept = async (to, body) => {
   await sendEmail(mailOptions);
 };
 const disputeReject = async (to, body) => {
-  var subject = "Query Resolution Rejected | Yatapay Secure";
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/DisputeRejected.html"), {encoding: "utf-8"});
+  var subject = "Query Resolution Rejected | Securepay ";
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/DisputeRejected.html"), { encoding: "utf-8" });
   // let url = `${process.env.HOST}/first-time-verify?token=${body.token}`;
 
   const template = handlebars.compile(html);
@@ -271,8 +271,9 @@ const disputeReject = async (to, body) => {
 };
 
 const verifyOTP = async (to, body) => {
-  var subject = 'OTP for your login | Yatapay Secure';
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/VerifiedOTP.html"), {encoding: "utf-8"});
+  console.log("BASE_PATH :", BASE_PATH)
+  var subject = 'OTP for your login | Securepay ';
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/VerifiedOTP.html"), { encoding: "utf-8" });
 
   // let url = `${process.env.HOST}/verify?token=${body.token}`;
 
@@ -286,8 +287,8 @@ const verifyOTP = async (to, body) => {
 };
 
 const supportTicketRaised = async (to, body) => {
-  var subject = 'A New Support Ticket Has Been Raised | Yatapay Secure';
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/SupportTicketRaised.html"), {encoding: "utf-8"});
+  var subject = 'A New Support Ticket Has Been Raised | Securepay ';
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/SupportTicketRaised.html"), { encoding: "utf-8" });
 
   // let url = `${process.env.HOST}/verify?token=${body.token}`;
 
@@ -299,8 +300,8 @@ const supportTicketRaised = async (to, body) => {
 };
 
 const supportTicketResolved = async (to, body) => {
-  var subject = 'Support Ticket Has Been Resolved | Yatapay Secure';
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/SupportTicketResolved.html"), {encoding: "utf-8"});
+  var subject = 'Support Ticket Has Been Resolved | Securepay ';
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/SupportTicketResolved.html"), { encoding: "utf-8" });
 
   // let url = `${process.env.HOST}/verify?token=${body.token}`;
 
@@ -312,8 +313,8 @@ const supportTicketResolved = async (to, body) => {
 };
 
 const supportTicketComment = async (to, body) => {
-  var subject = ' New comments received on your support ticket | Yatapay Secure';
-  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/SupportTicketComment.html"), {encoding: "utf-8"});
+  var subject = ' New comments received on your support ticket | Securepay ';
+  var html = fs.readFileSync(path.join(BASE_PATH, "/public/template/SupportTicketComment.html"), { encoding: "utf-8" });
 
   // let url = `${process.env.HOST}/verify?token=${body.token}`;
 

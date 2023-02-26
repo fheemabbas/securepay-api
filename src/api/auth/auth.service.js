@@ -54,6 +54,7 @@ const checkOldPassword = async (password, correctPassword) => {
 
 const loginUser = async (email, password, role) => {
   let user;
+  console.log("email, password, role :", email, password, role)
   switch (role) {
     case ROLES.ADMIN: case ROLES.STAFF_MEMBERS:
       user = await adminService.getAdminByEmail(email);

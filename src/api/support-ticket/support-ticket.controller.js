@@ -20,8 +20,8 @@ const createSupportTicket = catchAsync(async (req, res) => {
     let staff = await adminServices.getUserById(data.assignedUserId)
     let adminData = await adminServices.getUserById(config.admin.id)
 
-    // await emailService.supportTicketRaised(staff.email, {'staffName': staff.firstName + ' ' + staff.lastName, userName: `${req.user.firstName} ${req.user.lastName}`, details:  req.body.description, title: req.body.title})
-    // await emailService.supportTicketRaised(adminData.email, {'staffName': adminData.firstName + ' ' + adminData.lastName, userName: `${req.user.firstName} ${req.user.lastName}`, details:  req.body.description, title: req.body.title})
+    await emailService.supportTicketRaised(staff.email, { 'staffName': staff.firstName + ' ' + staff.lastName, userName: `${req.user.firstName} ${req.user.lastName}`, details: req.body.description, title: req.body.title })
+    await emailService.supportTicketRaised(adminData.email, { 'staffName': adminData.firstName + ' ' + adminData.lastName, userName: `${req.user.firstName} ${req.user.lastName}`, details: req.body.description, title: req.body.title })
 
     pubnubService.sendNotification(data.assignedUserId, { title: TITLE.CREATED_SUPPORT_TICKET, description: des });
     pubnubService.sendNotification(config.admin.id, { title: TITLE.CREATED_SUPPORT_TICKET, description: des });
@@ -56,11 +56,11 @@ const commentSupportTicket = catchAsync(async (req, res) => {
 
 
     let des = DESC.RECEIVED_NEW_COMMNET.replace('#', ticketData.title);
-    if (userData.number && userData.dialCode) {
-        let toMobile = "+" + userData.dialCode + "" + userData.number
-        let body = des
-        await twiloService.sendSms(toMobile, body)
-    }
+    // if (userData.number && userData.dialCode) {
+    //     let toMobile = "+" + userData.dialCode + "" + userData.number
+    //     let body = des
+    //     await twiloService.sendSms(toMobile, body)
+    // }
     pubnubService.sendNotification(userData._id, { title: TITLE.RECEIVED_NEW_COMMNET, description: des });
 
     createResponse(res, httpStatus.OK, Messages.COMMENT_ADD, {});
@@ -73,11 +73,11 @@ const supportTicketResolve = catchAsync(async (req, res) => {
     await emailService.supportTicketResolved(userData.email, { userName: `${userData.firstName} ${userData.lastName}`, title: data.title })
 
     let des = DESC.SUPPORT_TICKET_RESOLVE.replace('$', req.user.firstName + ' ' + req.user.lastName).replace('#', data.title);
-    if (userData.number && userData.dialCode) {
-        let toMobile = "+" + userData.dialCode + "" + userData.number
-        let body = des
-        await twiloService.sendSms(toMobile, body)
-    }
+    // if (userData.number && userData.dialCode) {
+    //     let toMobile = "+" + userData.dialCode + "" + userData.number
+    //     let body = des
+    //     await twiloService.sendSms(toMobile, body)
+    // }
     pubnubService.sendNotification(data.userId, { title: TITLE.SUPPORT_TICKET_RESOLVE, description: des });
     createResponse(res, httpStatus.OK, Messages.TICKET_RESOLVED, {});
 });
